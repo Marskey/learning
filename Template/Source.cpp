@@ -126,53 +126,45 @@ private:
 };
 
 template < typename T >
-struct type_tuple_value
+struct ModuleStructValue
 {
     T value;
-    type_tuple_value(CPlayer& arg) : value(arg) {}
+    ModuleStructValue(CPlayer& arg) : value(arg) {}
 };
 
-template < typename ...T >
-struct type_tuple : type_tuple_value<T>...
+template <typename ...T >
+struct ModuleStruct : ModuleStructValue<T>...
 {
-    type_tuple(CPlayer& args) : type_tuple_value<T>(args)... {
-        args.i = 0;
+    ModuleStruct(CPlayer& args) : ModuleStructValue<T>(args)... {
     }
 
-    template < typename U >
-    U& get() {
-        return type_tuple_value<U>::value;
+    template < typename M >
+    M& get() {
+        return ModuleStructValue<M>::value;
     }
 
-    template < typename U >
-    const U& get() const {
-        return type_tuple_value<U>::value;
+    template < typename M >
+    const M& get() const {
+        return ModuleStructValue<M>::value;
+    }
+
+    template<typename G>
+    void getAll(std::list<G*>& ref) {
+        ref = { &(ModuleStructValue<T>::value)... };
     }
 };
 
 int main() {
     CPlayer player;
-    //auto mm = ModulesStruct<mouduleA
-    //                        , mouduleB
-    //                        , mouduleC
-    //                        , mouduleD
-    //                        , mouduleE
-    //                        , mouduleF
-    //                        , mouduleG
-    //                       >({ player });
-
-    ////auto& b = mm.get<mouduleB>();
-    ////std::cout << b.i;
-    ////auto& a = mm.get<mouduleA>();
-    ////std::cout << a.i;
-    //auto& c = mm.get<mouduleG>();
-    //std::cout << c.i;
-
-    auto temp = type_tuple<mouduleB
+    auto *temp = new ModuleStruct<mouduleA
                           , mouduleC
+                          , mouduleB
                           , mouduleD>(player);
 
-    auto& d = temp.get<mouduleC>();
+    moduleAInterface& d = temp->get<mouduleA>();
+
+    std::list<moduleBase*> m;
+    temp->getAll<moduleBase>(m);
  
     return 0;
 }
