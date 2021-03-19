@@ -1,0 +1,3 @@
+// protobuf的repeated结构 debug中查看的方法
+// repeated TroopData single_troop_cur = 1;
+(protomsg::TroopData**)(&single_troop_cur.rep_->elements[0]), 20 // 查看前20个数据
